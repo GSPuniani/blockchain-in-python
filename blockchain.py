@@ -3,9 +3,8 @@ import hashlib
 import json
 from time import time
 from urllib import response
-import Flask
+from flask import Flask, request
 # from numpy import block
-import request
 
 class Blockchain(object):
     def __init__(self):
