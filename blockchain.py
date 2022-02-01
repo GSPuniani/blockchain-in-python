@@ -1,3 +1,4 @@
+from crypt import methods
 import hashlib
 import json
 from time import time
@@ -47,5 +48,34 @@ class Blockchain(object):
     def last_block(self):
         """Calls and returns the last block of the chain."""
         return self.chain[-1]
+
+    def proof_of_work(self, last_proof):
+        """Implementation of consensus algorithm."""
+        proof = 0
+        while self.valid_proof(last_proof, proof) is False:
+            proof += 1
+        return proof
+
+    @staticmethod
+    def valid_proof(last_proof, proof):
+        """Validates the block."""
+        guess = f"{last_proof}{proof}".encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
+        return guess_hash[:4] == "0000"
+
+
+# Create the app node
+app = Flask(__name__)
+node_identifier = str(uuid4()).replace("-", "")
+
+# Initialize the blockchain
+blockchain = Blockchain()
+
+@app.route("/mine", methods=["GET"])
+def mine():
+    return "Mining a new block"
+
+
+
 
     
