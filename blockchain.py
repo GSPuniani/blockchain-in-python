@@ -3,7 +3,8 @@ import hashlib
 import json
 from time import time
 from urllib import response
-from flask import Flask, request
+from flask import Flask, request, jsonify
+import uuid
 # from numpy import block
 
 class Blockchain(object):
@@ -66,7 +67,7 @@ class Blockchain(object):
 
 # Create the app node
 app = Flask(__name__)
-node_identifier = str(uuid4()).replace("-", "")
+node_identifier = str(uuid.uuid4()).replace("-", "")
 
 # Initialize the blockchain
 blockchain = Blockchain()
@@ -74,7 +75,7 @@ blockchain = Blockchain()
 @app.route("/mine", methods=["GET"])
 def mine():
     # Employ proof of work algorithm
-    last_block = blockchain.last_block()
+    last_block = blockchain.last_block
     last_proof = last_block['proof']
     proof = blockchain.proof_of_work(last_proof)
     # Reward the miner
@@ -85,7 +86,7 @@ def mine():
     response = {
         "message": "The new block has been forged.",
         "index": block["index"],
-        "transactions": block["transactions"],
+        "timestamp": block["timestamp"],
         "proof": block["proof"],
         "previous_hash": block["previous_hash"]
     }
@@ -101,7 +102,7 @@ def new_transaction():
     # Create a new transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
     response = {'message': f"Transaction is scheduled to be added to Block No. {index}"}
-    return jsonify, 201
+    return jsonify(response), 201
 
 @app.route("/chain", methods=["GET"])
 def full_chain():
@@ -113,7 +114,7 @@ def full_chain():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5001)
 
 
     
